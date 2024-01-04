@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json.schemastore.org/package",
+  "name": "library",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node --env-file=.env ./bin/www"
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.6",
+    "debug": "~4.3.4",
+    "express": "~4.18.2",
+    "express-async-handler": "^1.2.0",
+    "express-validator": "^7.0.1",
+    "http-errors": "~2.0.0",
+    "luxon": "^3.4.4",
+    "mongoose": "^8.0.3",
+    "morgan": "~1.10.0",
+    "pug": "3.0.2"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.6",
+    "@types/express": "^4.17.21",
+    "@types/http-errors": "^2.0.4",
+    "@types/luxon": "^3.4.0",
+    "@types/morgan": "^1.9.9"
+  }
+}

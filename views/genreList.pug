@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  h1= title
+
+  if genres.length
+    ul
+      each genre in genres
+        li
+          a(href=genre.url) #{genre.name}
+  else
+    ul
+      each placeholder in [1, 2, 3]
+        li
+          div.spinner-grow.spinner-grow-sm.text-primary(role="status")
+            span.visually-hidden "Loading..."

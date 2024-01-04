@@ -1,0 +1,29 @@
+extends layout
+
+block content
+
+  h1 Author: #{author.name}
+  p #{author.birthFormatted} - #{author.deathFormatted}
+
+  div(style='margin-left:20px;margin-top:20px')
+
+    h4 Books
+    if books
+      if books.length
+        dl
+          each book in books
+            dt
+              a(href=book.url) #{book.title}
+            dd #{book.summary}
+      else
+        p This author has no books known to us.
+    else
+      dl
+        each placeholder in [1, 2, 3]
+          dt
+            a
+              div.spinner-grow.spinner-grow-sm.text-primary(role="status")
+                span.visually-hidden "Loading..."
+          dd
+            div.spinner-grow.spinner-grow-sm.text-primary(role="status")
+              span.visually-hidden "Loading..."

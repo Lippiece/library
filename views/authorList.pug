@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  h1= title
+
+  if authorList
+    ul
+      each author in authorList
+        li
+          a(href=author.url) #{author.name}
+          |  (#{author.birthFormatted} - #{author.deathFormatted} )
+  else
+    ul
+      each placeholder in [1, 2, 3]
+        li
+          div.spinner-grow.spinner-grow-sm.text-primary(role="status")
+            span.visually-hidden "Loading..."

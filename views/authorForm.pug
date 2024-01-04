@@ -1,0 +1,24 @@
+extends layout
+
+block content
+  section.container.d-flex.flex-column.gap-3
+    h1= title
+
+    form(method="POST").d-flex.flex-column.gap-2.w-75
+      label(for="name") Name
+        input#name.form-control(type="text" name="name" required)
+      label(for="surname") Surname
+        input#surname.form-control(type="text" name="surname" required)
+      label(for="birth") Birth
+        input#birth.form-control(type="date" name="birthdate" required)
+      label(for="death") Death
+        input#death.form-control(type="date" name="death" required)
+      input.btn.btn-primary(type="submit" value="Submit")
+
+    if errors
+      .alert.alert-danger
+        ul
+          for error in errors
+            li= error.msg
+              |
+              | (#{error.path.charAt(0).toUpperCase() + error.path.slice(1)})

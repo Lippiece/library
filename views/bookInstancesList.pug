@@ -1,0 +1,30 @@
+extends layout
+
+block content
+  h1= title
+
+  if list
+    if list.length > 0
+      ul
+        each val in list
+          li
+            a(href=val.url) #{val.book.title} : #{val.imprint}
+            |  -&nbsp;
+            if val.status=='Available'
+              span.text-success #{val.status}
+            else if val.status=='Maintenance'
+              span.text-danger #{val.status}
+            else
+              span.text-warning #{val.status}
+            if val.status!='Available'
+              span  (Due: #{val.due_back.toDateString()} )
+
+    else
+      p No book instances
+
+  else
+    ul
+      each placeholder in [1,2,3,4,5,6,7,8,9,10]
+        li.list-snippet
+          div.spinner-grow.spinner-grow-sm.text-primary(role="status")
+            span.visually-hidden "Loading..."

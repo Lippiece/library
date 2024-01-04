@@ -1,0 +1,73 @@
+extends layout
+
+block content
+  section.container.d-flex.flex-column.gap-3
+    h1= title
+    //- disabled if authors.length === 0
+    form(method='POST').d-flex.flex-column.gap-2.w-75
+      label.form-label(for='author') Author:
+        |
+        | #[a.btn.btn-secondary.btn-sm(href='/catalog/author/create') Add new]
+        if !authors
+          div.spinner-grow.spinner-grow-sm.mx-1(role="status")
+            span.visually-hidden "Loading..."
+        select#author.form-select.mt-2(
+          name='author',
+          disabled=!authors,
+          required,
+        )
+          if authors
+            each author in authors
+              option(value=author._id) #{author.name}
+
+      div
+        label.form-label Genre:
+        |
+        | #[a.btn.btn-secondary.btn-sm(href='/catalog/genre/create') Add new]
+        if genres
+          fieldset
+            each genre in genres
+              .form-check
+                input.form-check-input(
+                  id=genre._id,
+                  type='checkbox',
+                  name=genre.name,
+                  list='genre-datalist',
+                )
+                label.form-check-label(for=genre._id) #{genre.name}
+        else
+          div.spinner-grow.spinner-grow-sm.mx-1(role="status")
+            span.visually-hidden "Loading..."
+
+      label.form-label(for="title") Title:
+        input#title.form-control(
+          type='text',
+          name='title',
+          required,
+          value=(undefined===bookTitle ? '' : bookTitle),
+        )
+
+      label.form-label(for="summary") Summary:
+        textarea#summary.form-control(
+          name='summary',
+          rows='3',
+          required,
+          value=(undefined===summary ? '' : summary),
+        )
+
+      label(for="isbn") ISBN:
+        input#isbn.form-control(
+          type='text',
+          name='isbn',
+          required,
+          value=(undefined===isbn ? '' : isbn),
+        )
+
+      button.btn.btn-primary(type='submit') Submit
+
+    if errors
+      ul
+        for error in errors
+          li= error.msg
+            |
+            | (#{error.path.charAt(0).toUpperCase() + error.path.slice(1)})

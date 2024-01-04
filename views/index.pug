@@ -1,0 +1,22 @@
+extends layout
+
+block content
+  h1.display-4= title
+  p.lead Welcome to #[em LocalLibrary], a very basic Express website developed as a tutorial example on the Mozilla Developer Network.
+
+  h1.display-5 Dynamic content
+
+  p The library has the following record counts:
+
+  if counts
+    ul.list-group.container-sm.ml-0.w-75
+      each count in counts
+        li.list-group-item.d-flex.justify-content-between.align-items-center
+          |#[strong #{count[0]}:]
+          if Boolean(count[1])
+            |#[span.badge.badge-pill.badge-primary.h5 #{count[1]}]
+          else
+            div.spinner-grow.spinner-grow-sm(role="status")
+              span.visually-hidden "Loading..."
+  else
+    p There are no records in the library.
