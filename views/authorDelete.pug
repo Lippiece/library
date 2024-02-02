@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  h1 Delete author
+  form.d-flex.flex-column.gap-2.w-75(action="/catalog/author/delete", method="post")
+    select#author.form-select(
+      name="author",
+      disabled=!authors,
+      required
+    )
+      if authors
+        each author in authors
+          option(value=author._id) #{author.name}
+
+    button.btn.btn-danger(type="submit") Delete

@@ -1,7 +1,7 @@
 import express from "express"
 
 import {
-  author_delete_get,
+  authorDeleteGet,
   author_delete_post,
   author_update_get,
   author_update_post,
@@ -14,10 +14,9 @@ import {
 
 // Require controller modules.
 import {
-  book_delete_get,
-  book_delete_post,
+  book_delete,
   book_update_get,
-  book_update_post,
+  book_update_put,
   bookCreateGet,
   bookCreatePost,
   bookDetail,
@@ -26,8 +25,7 @@ import {
 } from "../controllers/book.js"
 import {
   bookInstance,
-  bookinstance_delete_get,
-  bookinstance_delete_post,
+  bookinstance_delete,
   bookinstance_update_get,
   bookinstance_update_post,
   bookinstanceCreateGet,
@@ -46,6 +44,7 @@ import {
 } from "../controllers/genre.js"
 
 const router = express.Router()
+router.delete("/book/:id/delete", book_delete)
 
 // / BOOK ROUTES ///
 
@@ -59,17 +58,13 @@ router.get("/book/create", bookCreateGet)
 // POST request for creating Book.
 router.post("/book/create", bookCreatePost)
 
-// GET request to delete Book.
-router.get("/book/:id/delete", book_delete_get)
-
-// POST request to delete Book.
-router.post("/book/:id/delete", book_delete_post)
+// DELETE request to delete Book.
 
 // GET request to update Book.
 router.get("/book/:id/update", book_update_get)
 
-// POST request to update Book.
-router.post("/book/:id/update", book_update_post)
+// PUT request to update Book.
+router.put("/book/:id/update", book_update_put)
 
 // GET request for one Book.
 router.get("/book/:id", bookDetail)
@@ -87,7 +82,7 @@ router.get("/author/create", authorCreateGet)
 router.post("/author/create", authorCreatePost)
 
 // GET request to delete Author.
-router.get("/author/:id/delete", author_delete_get)
+router.get("/author/:id/delete", authorDeleteGet)
 
 // POST request to delete Author.
 router.post("/author/:id/delete", author_delete_post)
@@ -103,6 +98,12 @@ router.get("/author/:id", authorDetail)
 
 // GET request for list of all Authors.
 router.get("/authors", authorList)
+
+// GET request to delete authors.
+router.get("/authors/delete", authorDeleteGet);
+
+// POST request to delete authors.
+router.post("/authors/delete", author_delete_post);
 
 // / GENRE ROUTES ///
 
@@ -140,11 +141,9 @@ router.get("/bookinstance/create", bookinstanceCreateGet)
 // POST request for creating BookInstance.
 router.post("/bookinstance/create", bookinstanceCreatePost)
 
-// GET request to delete BookInstance.
-router.get("/bookinstance/:id/delete", bookinstance_delete_get)
+// DELETE request to delete BookInstance.
+router.delete("/bookinstance/:id/delete", bookinstance_delete)
 
-// POST request to delete BookInstance.
-router.post("/bookinstance/:id/delete", bookinstance_delete_post)
 
 // GET request to update BookInstance.
 router.get("/bookinstance/:id/update", bookinstance_update_get)

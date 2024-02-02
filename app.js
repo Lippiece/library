@@ -1,25 +1,25 @@
+import "dotenv/config"
+
 import path from "node:path"
-import { env } from "node:process"
 
 import cookieParser from "cookie-parser"
 import express from "express"
 import createError from "http-errors"
+import { StatusCodes } from "http-status-codes"
 import mongoose from "mongoose"
-import logger from "morgan"
+import morgan from "morgan"
 
 import catalogRouter from "./routes/catalog.js"
 import indexRouter from "./routes/index.js"
 import usersRouter from "./routes/users.js"
 
 const app      = express()
-const mongoUrl = env.MONGO
-
-console.log(env.MONGO)
-
-const main    = async () => {
+const mongoUrl = process.env.MONGO
+const main     = async () => {
   await mongoose.connect(mongoUrl)
+  console.log("Connected to MongoDB")
 }
-const dirname = path.dirname(new URL(import.meta.url).pathname)
+const dirname  = path.dirname(new URL(import.meta.url).pathname)
 
 mongoose.set("strictQuery", false)
 main().catch(console.error)
@@ -28,7 +28,7 @@ main().catch(console.error)
 app.set("views", path.join(dirname, "views"))
 app.set("view engine", "pug")
 
-app.use(logger("dev"))
+app.use(morgan("dev"))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
@@ -40,9 +40,8 @@ app.use("/catalog", catalogRouter)
 
 // catch 404 and forward to error handler
 app.use((_req, _res, next) => {
-  const notFound = 404
 
-  next(createError(notFound))
+  next(createError(StatusCodes.NOT_FOUND))
 })
 
 // error handler
@@ -58,4 +57,5 @@ app.use((error, req, res, _next) => {
   res.render("error")
 })
 
-export default app
+app.listen(3000)
+console.log("Server running on port 3000")

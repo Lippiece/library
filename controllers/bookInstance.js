@@ -3,11 +3,13 @@ import { body, validationResult } from "express-validator"
 
 import Book from "../models/book.js"
 import BookInstance from "../models/bookinstance.js"
+import { StatusCodes } from "http-status-codes"
 
 // Display list of all BookInstances.
 export const list = asyncHandler(async (req, res, _next) => {
   if (req.query.fetch === "true") {
     const allBookInstances = await BookInstance.find().populate("book").exec()
+    console.log(allBookInstances[0].book)
 
     return res.render("bookInstancesList", {
       list: allBookInstances,
@@ -29,7 +31,6 @@ export const bookInstance = asyncHandler(async (req, res, next) => {
   if (instance === null) {
     // No results.
     const error = new Error("Book not found")
-
     error.status = 404
 
     return next(error)
@@ -37,7 +38,7 @@ export const bookInstance = asyncHandler(async (req, res, next) => {
 
   res.render("bookInstance", {
     instance,
-    title: instance.book.title,
+    title: instance.book?.title || "Unknown book",
   })
 })
 
@@ -103,14 +104,19 @@ export const bookinstanceCreatePost = [
 ]
 
 // Display BookInstance delete form on GET.
-export const bookinstance_delete_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: BookInstance delete GET")
+export const bookinstance_delete = asyncHandler(async (req, res, next) => {
+  const instance = await BookInstance.findById(req.params.id)
+
+  if (instance === null) {
+    res.sendStatus(StatusCodes.NOT_FOUND)
+    return
+  }
+
+  await instance.deleteOne()
+
+  res.send(`Deleted ${instance._id} copy`)
 })
 
-// Handle BookInstance delete on POST.
-export const bookinstance_delete_post = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: BookInstance delete POST")
-})
 
 // Display BookInstance update form on GET.
 export const bookinstance_update_get = asyncHandler(async (req, res, next) => {

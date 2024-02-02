@@ -4,6 +4,7 @@ block content
   if book && bookInstances
     h1 Title: #{book.title}
 
+    
     p #[strong Author: ]
       a(href=book.author.url) #{book.author.name}
     p #[strong Summary:] #{book.summary}
@@ -13,6 +14,14 @@ block content
         a(href=val.url) #{val.name}
         if index < book.genre.length - 1
           |,&nbsp;
+
+    - var action = '/catalog/book/' + book._id + '/delete'
+    button.btn.btn-sm.btn-danger(
+      type="button",
+      hx-delete=action
+      hx-swap="outerHTML:transition:true"
+      hx-confirm="This will delete the book and its copies."
+    ) Delete
 
     div(style='margin-left:20px;margin-top:20px')
       h4 Copies

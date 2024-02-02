@@ -1,10 +1,21 @@
 extends layout
 
 block content
-  h1 #{instance.book.title}
+  if instance.book
+    h1 #{instance.book.title}
+  else
+    h1 No title
   h2 #{instance._id}
 
-  p #[strong Title: ] #[a(href=instance.book.url) #{instance.book.title}]
+  - var action = `/catalog/bookInstance/${instance._id}/delete`
+  button.btn.btn-danger.btn-sm(
+    type="button"
+    hx-delete=action
+    hx-confirm="This will delete the book instance."
+  ) Delete
+
+  if instance.book
+    p #[strong Title: ] #[a(href=`${instance.book.url}`) #{instance.book.title}]
   p #[strong Imprint: ] #{instance.imprint}
   p #[strong Status: ]
     if instance.status=='Available'

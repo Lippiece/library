@@ -5,7 +5,7 @@ import Author from "../models/author.js"
 import Book from "../models/book.js"
 
 // Display list of all Authors.
-export const list = asyncHandler(async (req, res, next) => {
+export const list = asyncHandler(async (req, res) => {
   if (req.query.fetch === "true") {
     const allAuthors = await Author.find().sort({ family_name: 1 }).exec()
 
@@ -45,7 +45,7 @@ export const detail = asyncHandler(async (req, res, next) => {
 })
 
 // Display Author create form on GET.
-export const authorCreateGet = asyncHandler(async (req, res, next) => {
+export const authorCreateGet = asyncHandler(async (_req, res) => {
   res.render("authorForm", { title: "Create Author" })
 })
 
@@ -71,7 +71,7 @@ export const authorCreatePost = [
 
   body("death").trim().escape().isISO8601().toDate(),
 
-  asyncHandler(async (req, res, next) => {
+  asyncHandler(async (req, res) => {
     const errors                              = validationResult(req)
     const { birthdate, death, name, surname } = req.body
 
@@ -98,18 +98,59 @@ export const authorCreatePost = [
 ]
 
 // Display Author delete form on GET.
-export const author_delete_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Author delete GET")
+export const authorDeleteGet = asyncHandler(async (req, res) => {
+  const render = authors =>
+    res.render("authorDelete", {
+      authors,
+      title: "Delete an author from the Library",
+    })
+
+  if (req.query.fetch === "true") {
+    const authors = await Author.find().sort({ family_name: 1 }).exec()
+
+    return render(authors)
+  }
+
+  render()
 })
 
 // Handle Author delete on POST.
-export const author_delete_post = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Author delete POST")
-})
+export const author_delete_post = [
+  body("author")
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage("Author must be specified")
+    .escape(),
+
+  asyncHandler(async (req, res) => {
+    const getAuthorBooks = async author => await Book.find({ author }).exec()
+    const errors         = validationResult(req)
+
+    if (errors.isEmpty()) {
+      const author = await Author.findById(req.body.author).exec()
+      const books  = await getAuthorBooks(author)
+
+      await Promise.all([
+        books.map(book => book.deleteOne()),
+        author.deleteOne(),
+      ])
+
+      return res.redirect("/catalog/authors")
+    }
+
+    const authors = await Author.find().sort({ family_name: 1 }).exec()
+
+    res.render("authorDelete", {
+      authors,
+      errors: errors.array(),
+      title: "Delete Author",
+    })
+  }),
+]
 
 // Display Author update form on GET.
 export const author_update_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Author update GET")
+  res.status = 404
 })
 
 // Handle Author update on POST.

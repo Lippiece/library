@@ -1,5 +1,6 @@
 import asyncHandler from "express-async-handler"
 import { body, validationResult } from "express-validator"
+import { StatusCodes } from "http-status-codes"
 
 import Author from "../models/author.js"
 import Book from "../models/book.js"
@@ -160,21 +161,49 @@ export const bookCreatePost = [
 ]
 
 // Display book delete form on GET.
-export const book_delete_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Book delete GET")
-})
+export const book_delete = asyncHandler(async (req, res, next) => {
+  const _id           = req.url.split("/").at(-2)
+  const book          = await Book.findById(_id).exec()
+  const bookInstances = await BookInstance.find({ book }).exec()
 
-// Handle book delete on POST.
-export const book_delete_post = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Book delete POST")
+  if (book === null) {
+    res.sendStatus(StatusCodes.NOT_FOUND)
+
+    return
+  }
+
+  await book.deleteOne()
+  await BookInstance.deleteMany({ book })
+  res.send(`Deleted ${book.title} and its ${
+    bookInstances
+    ? bookInstances.length
+    : 0} copies`)
 })
 
 // Display book update form on GET.
 export const book_update_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Book update GET")
+  const _id  = req.url.split("/").at(-2)
+  const book = await Book.findById(_id).exec()
+
+  if (book === null) {
+    res.sendStatus(StatusCodes.NOT_FOUND)
+  }
+
+  if (req.query.fetch === "true") {
+    res.render("bookForm", {
+      authors: await Author.find({}).exec(),
+      book,
+      genres: await Genre.find({}).exec(),
+      title: "Update Book",
+    })
+  }
+
+  res.render("bookForm", {
+    title: "Update Book",
+  })
 })
 
 // Handle book update on POST.
-export const book_update_post = asyncHandler(async (req, res, next) => {
+export const book_update_put = asyncHandler(async (req, res, next) => {
   res.send("NOT IMPLEMENTED: Book update POST")
 })
