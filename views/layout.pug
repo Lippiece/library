@@ -28,14 +28,6 @@ html(lang='en', data-bs-theme='dark')
                 li
                   a(href=item[0]).list-group-item-action.nav-link #{item[1]}
 
-              hr
-
-              // Delete forms
-              each item in [ ["/catalog/authors/delete", "Delete authors"], ["/catalog/genres/delete", "Delete genres"], ["/catalog/books/delete", "Delete books"], ["/catalog/bookinstances/delete", "Delete book copies"] ]
-                li
-                  form(action=item[0], method="post")
-                    button(type="submit").list-group-item-action.nav-link #{item[1]}
-
         div(class='col-sm-6')
           block content
 

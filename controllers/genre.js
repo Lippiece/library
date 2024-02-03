@@ -1,5 +1,6 @@
 import asyncHandler from "express-async-handler"
 import { body, validationResult } from "express-validator"
+import { StatusCodes } from "http-status-codes"
 
 import Book from "../models/book.js"
 import Genre from "../models/genre.js"
@@ -100,8 +101,26 @@ export const genre_delete_get = asyncHandler(async (req, res, next) => {
 })
 
 // Handle Genre delete on POST.
-export const genre_delete_post = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Genre delete POST")
+export const genre_delete = asyncHandler(async (req, res, next) => {
+  const genre = await Genre.findById(req.params.id).exec()
+
+  if (genre === null) {
+    res.sendStatus(StatusCodes.NOT_FOUND)
+
+    return
+  }
+
+  const books = await Book.find({ genre: req.params.id }).exec()
+
+  if (books.length > 0) {
+    res.send(`Cannot delete genre ${genre.name} because it is associated with ${books.length} books`)
+
+    return
+  }
+
+  await genre.deleteOne()
+
+  res.send(`Deleted genre ${genre.name}`)
 })
 
 // Display Genre update form on GET.

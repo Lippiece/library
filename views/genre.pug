@@ -2,6 +2,13 @@ extends layout
 
 block content
   h1= title
+  - var action = `/catalog/genre/${genre.id}/delete`
+  - var confirm = `Delete genre ${genre.name}?`
+  button.btn.btn-danger.btn-sm(
+    hx-delete=action,
+    hx-confirm=confirm,
+    hx-swap="outerHTML"
+  ) Delete
   h2 #{genre.name} books:
 
   ul

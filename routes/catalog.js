@@ -34,7 +34,7 @@ import {
 } from "../controllers/bookInstance.js"
 import {
   genre_delete_get,
-  genre_delete_post,
+  genre_delete,
   genre_update_get,
   genre_update_post,
   genreCreateGet,
@@ -114,11 +114,8 @@ router.get("/genre/create", genreCreateGet)
 // POST request for creating Genre.
 router.post("/genre/create", genreCreatePost)
 
-// GET request to delete Genre.
-router.get("/genre/:id/delete", genre_delete_get)
-
 // POST request to delete Genre.
-router.post("/genre/:id/delete", genre_delete_post)
+router.delete("/genre/:id/delete", genre_delete)
 
 // GET request to update Genre.
 router.get("/genre/:id/update", genre_update_get)
