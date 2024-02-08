@@ -5,6 +5,8 @@ import path from "node:path"
 import cookieParser from "cookie-parser"
 import express from "express"
 import createError from "http-errors"
+import helmet from "helmet"
+import compression from "compression"
 import { StatusCodes } from "http-status-codes"
 import mongoose from "mongoose"
 import morgan from "morgan"
@@ -29,6 +31,14 @@ app.set("views", path.join(dirname, "views"))
 app.set("view engine", "pug")
 
 app.use(morgan("dev"))
+app.use(compression())
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      "script-src": ["'self'", "code.jquery.com", "cdn.jsdelivr.net"],
+    },
+  }),
+);
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
